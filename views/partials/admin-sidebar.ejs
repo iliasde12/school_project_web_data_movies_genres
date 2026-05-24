@@ -1,0 +1,33 @@
+<aside class="sidebar">
+    <div class="sidebar-logo">
+        <a href="/">CineVault</a>
+        <span>Admin Panel</span>
+    </div>
+    <nav class="sidebar-nav">
+        <p class="nav-label">Overzicht</p>
+        <a href="/admin" class="nav-item <%= page === 'dashboard' ? 'active' : '' %>">
+            <span class="nav-icon">📊</span> Dashboard
+        </a>
+        <p class="nav-label" style="margin-top:1rem;">Beheer</p>
+        <a href="/admin/movies" class="nav-item <%= page === 'movies' ? 'active' : '' %>">
+            <span class="nav-icon">🎬</span> Films
+        </a>
+        <a href="/admin/genres" class="nav-item <%= page === 'genres' ? 'active' : '' %>">
+            <span class="nav-icon">🏷️</span> Genres
+        </a>
+        <p class="nav-label" style="margin-top:1rem;">Site</p>
+        <a href="/" class="nav-item" target="_blank">
+            <span class="nav-icon">🌐</span> Bekijk site
+        </a>
+    </nav>
+    <div class="sidebar-footer">
+        <div class="user-info">
+            <div class="user-avatar"><%= locals.user ? user.name.charAt(0).toUpperCase() : 'A' %></div>
+            <div>
+                <p class="user-name"><%= locals.user ? user.name : 'Admin' %></p>
+                <p class="user-role">Administrator</p>
+            </div>
+        </div>
+        <a href="/logout" class="btn-logout">Uitloggen</a>
+    </div>
+</aside>

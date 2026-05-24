@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Genre bewerken — CineVault Admin</title><%- include('../../partials/admin-head') %></head>
+<body>
+<%- include('../../partials/admin-sidebar', { page: 'genres' }) %>
+<div class="main">
+    <div class="topbar">
+        <h1 class="page-title">Genre bewerken</h1>
+        <a href="/admin/genres" class="btn btn-secondary">← Terug</a>
+    </div>
+    <div class="content">
+        <div class="form-card">
+            <form action="/admin/genres/<%= genre._id %>/edit" method="POST">
+                <div class="form-group">
+                    <label for="name">Naam</label>
+                    <input type="text" id="name" name="name" required value="<%= genre.name %>">
+                </div>
+                <div class="form-group">
+                    <label for="description">Beschrijving</label>
+                    <textarea id="description" name="description" required><%= genre.description %></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="icon">Icon URL</label>
+                    <input type="url" id="icon" name="icon" value="<%= genre.icon %>">
+                </div>
+                <div class="form-group">
+                    <label for="color">Kleur</label>
+                    <div class="color-row">
+                        <input type="color" id="color-picker" value="<%= genre.color %>" style="width:50px;height:40px;padding:2px;cursor:pointer;">
+                        <input type="text" id="color" name="color" required value="<%= genre.color %>">
+                        <div class="color-preview" id="color-preview" style="background:<%= genre.color %>;"></div>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Opslaan</button>
+                    <a href="/admin/genres" class="btn btn-secondary">Annuleren</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    const picker = document.getElementById('color-picker');
+    const input = document.getElementById('color');
+    const preview = document.getElementById('color-preview');
+    picker.addEventListener('input', () => { input.value = picker.value; preview.style.background = picker.value; });
+    input.addEventListener('input', () => { picker.value = input.value; preview.style.background = input.value; });
+</script>
+</body>
+</html>

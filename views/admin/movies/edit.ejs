@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Film bewerken — CineVault Admin</title><%- include('../../partials/admin-head') %></head>
+<body>
+<%- include('../../partials/admin-sidebar', { page: 'movies' }) %>
+<div class="main">
+    <div class="topbar">
+        <h1 class="page-title">Film bewerken</h1>
+        <a href="/admin/movies" class="btn btn-secondary">← Terug</a>
+    </div>
+    <div class="content">
+        <div class="form-card">
+            <form action="/admin/movies/<%= movie._id %>/edit" method="POST">
+                <div class="form-group">
+                    <label for="title">Titel</label>
+                    <input type="text" id="title" name="title" required value="<%= movie.title %>">
+                </div>
+                <div class="form-group">
+                    <label for="description">Beschrijving</label>
+                    <textarea id="description" name="description" required><%= movie.description %></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="year">Jaar</label>
+                        <input type="number" id="year" name="year" required value="<%= movie.year %>">
+                    </div>
+                    <div class="form-group">
+                        <label for="rating">Rating</label>
+                        <input type="number" id="rating" name="rating" required value="<%= movie.rating %>" step="0.1" min="0" max="10">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="duration">Duur (minuten)</label>
+                        <input type="number" id="duration" name="duration" required value="<%= movie.duration %>">
+                    </div>
+                    <div class="form-group">
+                        <label for="genre">Genre</label>
+                        <select id="genre" name="genre" required>
+                            <option value="">Kies een genre</option>
+                            <% genres.forEach(genre => { %>
+                                <option value="<%= genre._id %>" <%= movie.genre && movie.genre.toString() === genre._id.toString() ? 'selected' : '' %>>
+                                    <%= genre.name %>
+                                </option>
+                            <% }) %>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="director">Regisseur</label>
+                    <input type="text" id="director" name="director" required value="<%= movie.director %>">
+                </div>
+                <div class="form-group">
+                    <label for="poster">Poster URL</label>
+                    <input type="url" id="poster" name="poster" required value="<%= movie.poster %>">
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Opslaan</button>
+                    <a href="/admin/movies" class="btn btn-secondary">Annuleren</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

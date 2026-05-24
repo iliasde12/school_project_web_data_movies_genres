@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Dashboard — CineVault Admin</title><%- include('../partials/admin-head') %></head>
+<body>
+<%- include('../partials/admin-sidebar', { page: 'dashboard' }) %>
+<div class="main">
+    <div class="topbar"><h1 class="page-title">Dashboard</h1></div>
+    <div class="content">
+        <div class="stat-grid">
+            <div class="stat-card">
+                <p class="stat-card-label">Totaal films</p>
+                <p class="stat-card-value"><%= movieCount %></p>
+            </div>
+            <div class="stat-card">
+                <p class="stat-card-label">Totaal genres</p>
+                <p class="stat-card-value"><%= genreCount %></p>
+            </div>
+        </div>
+        <div class="table-wrap">
+            <div class="table-header"><p class="table-title">Snelle acties</p></div>
+            <div style="padding:1.5rem;display:flex;gap:1rem;flex-wrap:wrap;">
+                <a href="/admin/movies/create" class="btn btn-primary">+ Film toevoegen</a>
+                <a href="/admin/genres/create" class="btn btn-secondary">+ Genre toevoegen</a>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

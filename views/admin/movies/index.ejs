@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Films — CineVault Admin</title><%- include('../../partials/admin-head') %></head>
+<body>
+<%- include('../../partials/admin-sidebar', { page: 'movies' }) %>
+<div class="main">
+    <div class="topbar">
+        <h1 class="page-title">Films</h1>
+        <a href="/admin/movies/create" class="btn btn-primary">+ Toevoegen</a>
+    </div>
+    <div class="content">
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Poster</th>
+                        <th>Titel</th>
+                        <th>Genre</th>
+                        <th>Jaar</th>
+                        <th>Rating</th>
+                        <th>Duur</th>
+                        <th>Acties</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% movies.forEach(movie => { %>
+                    <tr>
+                        <td class="td-poster"><img src="<%= movie.poster %>" alt="<%= movie.title %>"></td>
+                        <td><strong><%= movie.title %></strong></td>
+                        <td>
+                            <% if (movie.genre) { %>
+                                <span class="badge" style="background:<%= movie.genre.color %>22;color:<%= movie.genre.color %>;border:1px solid <%= movie.genre.color %>44;">
+                                    <%= movie.genre.name %>
+                                </span>
+                            <% } %>
+                        </td>
+                        <td><%= movie.year %></td>
+                        <td>⭐ <%= movie.rating %></td>
+                        <td><%= movie.duration %> min</td>
+                        <td>
+                            <div class="actions">
+                                <a href="/admin/movies/<%= movie._id %>/edit" class="btn btn-secondary">Bewerken</a>
+                                <form action="/admin/movies/<%= movie._id %>/delete" method="POST" onsubmit="return confirm('Film verwijderen?')">
+                                    <button type="submit" class="btn btn-danger">Verwijderen</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+</html>

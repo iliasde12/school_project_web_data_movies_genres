@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Genres — CineVault Admin</title><%- include('../../partials/admin-head') %></head>
+<body>
+<%- include('../../partials/admin-sidebar', { page: 'genres' }) %>
+<div class="main">
+    <div class="topbar">
+        <h1 class="page-title">Genres</h1>
+        <a href="/admin/genres/create" class="btn btn-primary">+ Toevoegen</a>
+    </div>
+    <div class="content">
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Kleur</th>
+                        <th>Naam</th>
+                        <th>Beschrijving</th>
+                        <th>Acties</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% genres.forEach(genre => { %>
+                    <tr>
+                        <td>
+                            <div style="width:32px;height:32px;border-radius:6px;background:<%= genre.color %>;"></div>
+                        </td>
+                        <td>
+                            <span class="badge" style="background:<%= genre.color %>22;color:<%= genre.color %>;border:1px solid <%= genre.color %>44;">
+                                <%= genre.name %>
+                            </span>
+                        </td>
+                        <td style="color:var(--muted);max-width:300px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"><%= genre.description %></td>
+                        <td>
+                            <div class="actions">
+                                <a href="/admin/genres/<%= genre._id %>/edit" class="btn btn-secondary">Bewerken</a>
+                                <form action="/admin/genres/<%= genre._id %>/delete" method="POST" onsubmit="return confirm('Genre verwijderen?')">
+                                    <button type="submit" class="btn btn-danger">Verwijderen</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+</html>

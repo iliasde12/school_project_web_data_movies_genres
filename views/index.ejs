@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CineVault</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎬</text></svg>">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            --bg: #0a0a0f;
+            --surface: #12121a;
+            --card: #1a1a26;
+            --border: rgba(255,255,255,0.07);
+            --text: #f0f0f5;
+            --muted: #7a7a9a;
+            --accent: #e50914;
+        }
+        body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; min-height: 100vh; }
+        nav {
+            position: sticky; top: 0; z-index: 100;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 1.2rem 4rem;
+            background: linear-gradient(180deg, rgba(10,10,15,0.98) 0%, transparent 100%);
+            border-bottom: 1px solid var(--border);
+        }
+        .logo { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; letter-spacing: 3px; color: var(--accent); text-decoration: none; }
+        .nav-right { display: flex; align-items: center; gap: 1.5rem; }
+        .nav-right a { color: var(--muted); text-decoration: none; font-size: 0.9rem; transition: color 0.2s; }
+        .nav-right a:hover { color: var(--text); }
+        .btn-login { background: var(--accent); color: #fff !important; padding: 0.5rem 1.2rem; border-radius: 4px; font-weight: 500; font-size: 0.85rem !important; }
+        .hero {
+            position: relative; height: 520px;
+            display: flex; align-items: flex-end; padding: 3rem 4rem;
+            background: linear-gradient(135deg, #0d0d1a 0%, #1a0a0a 100%); overflow: hidden;
+        }
+        .hero-bg {
+            position: absolute; inset: 0;
+            background: radial-gradient(ellipse at 70% 50%, rgba(229,9,20,0.12) 0%, transparent 60%),
+                        radial-gradient(ellipse at 20% 80%, rgba(100,50,200,0.08) 0%, transparent 50%);
+        }
+        .hero-grid {
+            position: absolute; inset: 0;
+            background-image: linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+            background-size: 60px 60px;
+        }
+        .hero-content { position: relative; z-index: 2; max-width: 600px; }
+        .hero-tag { display: inline-block; background: var(--accent); color: #fff; font-size: 0.7rem; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; padding: 0.3rem 0.8rem; border-radius: 2px; margin-bottom: 1rem; }
+        .hero h1 { font-family: 'Bebas Neue', sans-serif; font-size: 5rem; line-height: 0.95; letter-spacing: 2px; margin-bottom: 1rem; }
+        .hero p { color: var(--muted); font-size: 1rem; line-height: 1.6; max-width: 460px; margin-bottom: 2rem; }
+        .hero-stats { display: flex; gap: 2rem; }
+        .stat { display: flex; flex-direction: column; gap: 2px; }
+        .stat-num { font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; color: var(--text); letter-spacing: 1px; }
+        .stat-label { font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+        .section { padding: 2.5rem 4rem; }
+        .section-title {
+            font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; letter-spacing: 3px; color: var(--text);
+            margin-bottom: 1.2rem; display: flex; align-items: center; gap: 0.8rem;
+        }
+        .section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+        .genres-row { display: flex; gap: 0.8rem; flex-wrap: wrap; }
+        .genre-chip {
+            display: flex; align-items: center; gap: 0.5rem;
+            padding: 0.5rem 1rem; border-radius: 20px;
+            border: 1px solid var(--border); background: var(--surface);
+            cursor: pointer; transition: all 0.2s; font-size: 0.85rem; color: var(--muted); text-decoration: none;
+        }
+        .genre-chip:hover, .genre-chip.active { border-color: currentColor; color: var(--text); background: var(--card); }
+        .genre-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+        .movies-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1.2rem; transition: opacity 0.25s;
+        }
+        .movies-grid.loading { opacity: 0.3; pointer-events: none; }
+        .movie-link { text-decoration: none; color: inherit; display: block; }
+        .movie-card {
+            background: var(--card); border-radius: 8px; overflow: hidden;
+            border: 1px solid var(--border); transition: transform 0.25s, border-color 0.25s; cursor: pointer;
+        }
+        .movie-card:hover { transform: translateY(-6px) scale(1.02); border-color: rgba(255,255,255,0.18); }
+        .movie-poster { position: relative; aspect-ratio: 2/3; overflow: hidden; }
+        .movie-poster img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s; }
+        .movie-card:hover .movie-poster img { transform: scale(1.07); }
+        .movie-rating {
+            position: absolute; top: 8px; right: 8px;
+            background: rgba(10,10,15,0.85); border: 1px solid var(--border);
+            border-radius: 4px; padding: 3px 8px; font-size: 0.78rem; font-weight: 500;
+            display: flex; align-items: center; gap: 4px;
+        }
+        .star { color: #f5c518; font-size: 0.7rem; }
+        .movie-genre-badge {
+            position: absolute; bottom: 8px; left: 8px;
+            border-radius: 3px; padding: 2px 8px;
+            font-size: 0.68rem; font-weight: 500; letter-spacing: 0.5px; text-transform: uppercase;
+        }
+        .movie-overlay {
+            position: absolute; inset: 0;
+            background: linear-gradient(180deg, transparent 50%, rgba(10,10,15,0.8) 100%);
+            opacity: 0; transition: opacity 0.3s;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .movie-card:hover .movie-overlay { opacity: 1; }
+        .play-btn {
+            width: 48px; height: 48px; border-radius: 50%;
+            background: rgba(229,9,20,0.9);
+            display: flex; align-items: center; justify-content: center; font-size: 1.2rem;
+        }
+        .movie-info { padding: 0.9rem; }
+        .movie-title { font-size: 0.9rem; font-weight: 500; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .movie-meta { display: flex; align-items: center; gap: 0.5rem; font-size: 0.75rem; color: var(--muted); }
+        .meta-sep { opacity: 0.4; }
+        footer { padding: 2rem 4rem; border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+        .footer-logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.3rem; letter-spacing: 3px; color: var(--accent); opacity: 0.6; }
+        .footer-text { font-size: 0.8rem; color: var(--muted); }
+    </style>
+</head>
+<body>
+
+<nav>
+    <a href="/" class="logo">CineVault</a>
+    <div class="nav-right">
+        <a href="/">Films</a>
+        <% if (locals.user) { %>
+            <a href="/admin">Admin</a>
+            <a href="/logout" class="btn-login">Uitloggen</a>
+        <% } else { %>
+            <a href="/login" class="btn-login">Inloggen</a>
+        <% } %>
+    </div>
+</nav>
+
+<section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-grid"></div>
+    <div class="hero-content">
+        <span class="hero-tag">Nu beschikbaar</span>
+        <h1>Ontdek<br>de beste<br>films</h1>
+        <p>Een zorgvuldig samengestelde collectie van de beste films uit alle genres.</p>
+        <div class="hero-stats">
+            <div class="stat">
+                <span class="stat-num" id="movie-count"><%= movies.length %>+</span>
+                <span class="stat-label">Films</span>
+            </div>
+            <div class="stat">
+                <span class="stat-num"><%= genres.length %></span>
+                <span class="stat-label">Genres</span>
+            </div>
+            <div class="stat">
+                <span class="stat-num">4K</span>
+                <span class="stat-label">Kwaliteit</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section">
+    <h2 class="section-title">Genres</h2>
+    <div class="genres-row">
+        <a class="genre-chip active" data-genre="">
+            <span class="genre-dot" style="background:#e50914;"></span>
+            Alle films
+        </a>
+        <% genres.forEach(genre => { %>
+            <a class="genre-chip" data-genre="<%= genre._id %>">
+                <span class="genre-dot" style="background:<%= genre.color %>;"></span>
+                <%= genre.name %>
+            </a>
+        <% }) %>
+    </div>
+</section>
+
+<section class="section">
+    <h2 class="section-title">Films</h2>
+    <div class="movies-grid" id="movies-grid">
+        <% movies.forEach(movie => { %>
+            <% const genre = genres.find(g => g._id.toString() === movie.genre.toString()); %>
+            <a href="/movies/<%= movie._id %>" class="movie-link">
+                <div class="movie-card">
+                    <div class="movie-poster">
+                        <img src="<%= movie.poster %>" alt="<%= movie.title %>" loading="lazy">
+                        <div class="movie-rating"><span class="star">★</span> <%= movie.rating %></div>
+                        <% if (genre) { %>
+                            <span class="movie-genre-badge" style="background:<%= genre.color %>22; color:<%= genre.color %>; border:1px solid <%= genre.color %>44;">
+                                <%= genre.name %>
+                            </span>
+                        <% } %>
+                        <div class="movie-overlay"><div class="play-btn">▶</div></div>
+                    </div>
+                    <div class="movie-info">
+                        <p class="movie-title"><%= movie.title %></p>
+                        <div class="movie-meta">
+                            <span><%= movie.year %></span>
+                            <span class="meta-sep">·</span>
+                            <span><%= movie.duration %> min</span>
+                            <span class="meta-sep">·</span>
+                            <span><%= movie.director %></span>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        <% }) %>
+    </div>
+</section>
+
+<footer>
+    <div class="footer-logo">CineVault</div>
+    <p class="footer-text">© 2024 CineVault. Alle rechten voorbehouden.</p>
+</footer>
+
+<script>
+    const grid = document.getElementById("movies-grid");
+    const chips = document.querySelectorAll(".genre-chip");
+    const movieCount = document.getElementById("movie-count");
+
+    const renderMovies = (movies) => {
+        grid.innerHTML = movies.map(movie => {
+            const genre = movie.genre;
+            const badge = genre
+                ? `<span class="movie-genre-badge" style="background:${genre.color}22;color:${genre.color};border:1px solid ${genre.color}44;">${genre.name}</span>`
+                : "";
+            return `
+                <a href="/movies/${movie._id}" class="movie-link">
+                    <div class="movie-card">
+                        <div class="movie-poster">
+                            <img src="${movie.poster}" alt="${movie.title}" loading="lazy">
+                            <div class="movie-rating"><span class="star">★</span> ${movie.rating}</div>
+                            ${badge}
+                            <div class="movie-overlay"><div class="play-btn">▶</div></div>
+                        </div>
+                        <div class="movie-info">
+                            <p class="movie-title">${movie.title}</p>
+                            <div class="movie-meta">
+                                <span>${movie.year}</span>
+                                <span class="meta-sep">·</span>
+                                <span>${movie.duration} min</span>
+                                <span class="meta-sep">·</span>
+                                <span>${movie.director}</span>
+                            </div>
+                        </div>
+                    </div>
+                </a>`;
+        }).join("");
+        movieCount.textContent = movies.length + "+";
+    };
+
+    chips.forEach(chip => {
+        chip.addEventListener("click", async () => {
+            chips.forEach(c => c.classList.remove("active"));
+            chip.classList.add("active");
+            grid.classList.add("loading");
+            const genre = chip.dataset.genre;
+            const url = genre ? `/api/movies?genre=${genre}` : "/api/movies";
+            const res = await fetch(url);
+            const movies = await res.json();
+            renderMovies(movies);
+            grid.classList.remove("loading");
+        });
+    });
+</script>
+</body>
+</html>

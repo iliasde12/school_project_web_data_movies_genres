@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inloggen — CineVault</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎬</text></svg>">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --bg: #0a0a0f;
+            --surface: #12121a;
+            --card: #1a1a26;
+            --border: rgba(255,255,255,0.07);
+            --text: #f0f0f5;
+            --muted: #7a7a9a;
+            --accent: #e50914;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'DM Sans', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.2rem 4rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .logo {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 2rem;
+            letter-spacing: 3px;
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        .main {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            padding: 3rem 1rem;
+        }
+
+        .bg-glow {
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(ellipse at 30% 50%, rgba(229,9,20,0.1) 0%, transparent 55%),
+                radial-gradient(ellipse at 75% 40%, rgba(100,50,200,0.07) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .bg-grid {
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+            background-size: 60px 60px;
+            pointer-events: none;
+        }
+
+        .card {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            max-width: 420px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 2.5rem;
+        }
+
+        .card-header {
+            margin-bottom: 2rem;
+        }
+
+        .card-tag {
+            display: inline-block;
+            background: var(--accent);
+            color: #fff;
+            font-size: 0.68rem;
+            font-weight: 500;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            padding: 0.25rem 0.7rem;
+            border-radius: 2px;
+            margin-bottom: 1rem;
+        }
+
+        .card-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 2.8rem;
+            letter-spacing: 2px;
+            line-height: 1;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-sub {
+            font-size: 0.88rem;
+            color: var(--muted);
+        }
+
+        .error-box {
+            background: rgba(229,9,20,0.1);
+            border: 1px solid rgba(229,9,20,0.3);
+            border-radius: 6px;
+            padding: 0.75rem 1rem;
+            font-size: 0.85rem;
+            color: #ff6b6b;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+
+        label {
+            display: block;
+            font-size: 0.78rem;
+            font-weight: 500;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+        }
+
+        input {
+            width: 100%;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 0.8rem 1rem;
+            color: var(--text);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.95rem;
+            outline: none;
+            transition: border-color 0.2s, background 0.2s;
+        }
+
+        input:focus {
+            border-color: rgba(229,9,20,0.5);
+            background: #1e1e2e;
+        }
+
+        input::placeholder { color: var(--muted); opacity: 0.5; }
+
+        .btn-submit {
+            width: 100%;
+            margin-top: 1.8rem;
+            padding: 0.9rem;
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.1rem;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: opacity 0.2s, transform 0.1s;
+        }
+
+        .btn-submit:hover { opacity: 0.88; }
+        .btn-submit:active { transform: scale(0.98); }
+
+        .card-footer {
+            margin-top: 1.5rem;
+            text-align: center;
+            font-size: 0.82rem;
+            color: var(--muted);
+        }
+
+        .card-footer a {
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .card-footer a:hover { color: var(--accent); }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin: 1.5rem 0;
+            color: var(--muted);
+            font-size: 0.78rem;
+        }
+
+        .divider::before, .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
+        footer {
+            padding: 1.5rem 4rem;
+            border-top: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .footer-logo {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.1rem;
+            letter-spacing: 3px;
+            color: var(--accent);
+            opacity: 0.5;
+        }
+
+        .footer-text {
+            font-size: 0.78rem;
+            color: var(--muted);
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <a href="/" class="logo">CineVault</a>
+</nav>
+
+<main class="main">
+    <div class="bg-glow"></div>
+    <div class="bg-grid"></div>
+
+    <div class="card">
+        <div class="card-header">
+            <span class="card-tag">Welkom terug</span>
+            <h1 class="card-title">Inloggen</h1>
+            <p class="card-sub">Log in om toegang te krijgen tot je account.</p>
+        </div>
+
+        <% if (locals.error) { %>
+            <div class="error-box">
+                ⚠ <%= error %>
+            </div>
+        <% } %>
+
+        <form action="/login" method="POST">
+            <div class="form-group">
+                <label for="email">E-mailadres</label>
+                <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    placeholder="jouw@email.com"
+                    required
+                    autocomplete="email"
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="password">Wachtwoord</label>
+                <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    placeholder="••••••••"
+                    required
+                    autocomplete="current-password"
+                >
+            </div>
+
+            <button type="submit" class="btn-submit">Inloggen</button>
+        </form>
+
+        <div class="divider">of</div>
+
+        <div class="card-footer">
+            <a href="/">← Terug naar films</a>
+        </div>
+    </div>
+</main>
+
+<footer>
+    <div class="footer-logo">CineVault</div>
+    <p class="footer-text">© 2024 CineVault. Alle rechten voorbehouden.</p>
+</footer>
+
+</body>
+</html>

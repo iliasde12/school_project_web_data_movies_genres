@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Film toevoegen — CineVault Admin</title><%- include('../../partials/admin-head') %></head>
+<body>
+<%- include('../../partials/admin-sidebar', { page: 'movies' }) %>
+<div class="main">
+    <div class="topbar">
+        <h1 class="page-title">Film toevoegen</h1>
+        <a href="/admin/movies" class="btn btn-secondary">← Terug</a>
+    </div>
+    <div class="content">
+        <div class="form-card">
+            <form action="/admin/movies/create" method="POST">
+                <div class="form-group">
+                    <label for="title">Titel</label>
+                    <input type="text" id="title" name="title" required placeholder="Film titel">
+                </div>
+                <div class="form-group">
+                    <label for="description">Beschrijving</label>
+                    <textarea id="description" name="description" required placeholder="Korte beschrijving..."></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="year">Jaar</label>
+                        <input type="number" id="year" name="year" required placeholder="2024" min="1900" max="2099">
+                    </div>
+                    <div class="form-group">
+                        <label for="rating">Rating</label>
+                        <input type="number" id="rating" name="rating" required placeholder="8.5" min="0" max="10" step="0.1">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="duration">Duur (minuten)</label>
+                        <input type="number" id="duration" name="duration" required placeholder="120">
+                    </div>
+                    <div class="form-group">
+                        <label for="genre">Genre</label>
+                        <select id="genre" name="genre" required>
+                            <option value="">Kies een genre</option>
+                            <% genres.forEach(genre => { %>
+                                <option value="<%= genre._id %>"><%= genre.name %></option>
+                            <% }) %>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="director">Regisseur</label>
+                    <input type="text" id="director" name="director" required placeholder="Naam regisseur">
+                </div>
+                <div class="form-group">
+                    <label for="poster">Poster URL</label>
+                    <input type="url" id="poster" name="poster" required placeholder="https://...">
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Film opslaan</button>
+                    <a href="/admin/movies" class="btn btn-secondary">Annuleren</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

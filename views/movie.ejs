@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= movie.title %> — CineVault</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎬</text></svg>">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            --bg: #0a0a0f;
+            --surface: #12121a;
+            --card: #1a1a26;
+            --border: rgba(255,255,255,0.07);
+            --text: #f0f0f5;
+            --muted: #7a7a9a;
+            --accent: #e50914;
+        }
+        body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; min-height: 100vh; }
+
+        nav {
+            position: sticky; top: 0; z-index: 100;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 1.2rem 4rem;
+            background: linear-gradient(180deg, rgba(10,10,15,0.98) 0%, transparent 100%);
+            border-bottom: 1px solid var(--border);
+        }
+        .logo { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; letter-spacing: 3px; color: var(--accent); text-decoration: none; }
+        .nav-right { display: flex; align-items: center; gap: 1.5rem; }
+        .nav-right a { color: var(--muted); text-decoration: none; font-size: 0.9rem; transition: color 0.2s; }
+        .nav-right a:hover { color: var(--text); }
+        .btn-login { background: var(--accent); color: #fff !important; padding: 0.5rem 1.2rem; border-radius: 4px; font-weight: 500; font-size: 0.85rem !important; }
+
+        /* HERO BACKDROP */
+        .movie-hero {
+            position: relative;
+            min-height: 520px;
+            display: flex;
+            align-items: flex-end;
+            padding: 3rem 4rem;
+            overflow: hidden;
+        }
+        .hero-backdrop {
+            position: absolute;
+            inset: 0;
+            background-image: url('<%= movie.poster %>');
+            background-size: cover;
+            background-position: center top;
+            filter: blur(18px) brightness(0.25);
+            transform: scale(1.08);
+        }
+        .hero-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(10,10,15,0.3) 0%, rgba(10,10,15,0.95) 100%);
+        }
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            gap: 3rem;
+            align-items: flex-end;
+            width: 100%;
+        }
+        .movie-poster-wrap {
+            flex-shrink: 0;
+            width: 220px;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+        }
+        .movie-poster-wrap img { width: 100%; display: block; }
+
+        .movie-details { flex: 1; padding-bottom: 0.5rem; }
+
+        .back-link {
+            display: inline-flex; align-items: center; gap: 0.4rem;
+            color: var(--muted); text-decoration: none; font-size: 0.85rem;
+            margin-bottom: 1.2rem; transition: color 0.2s;
+        }
+        .back-link:hover { color: var(--text); }
+
+        .genre-badge {
+            display: inline-block;
+            border-radius: 3px; padding: 3px 10px;
+            font-size: 0.72rem; font-weight: 500; letter-spacing: 1px; text-transform: uppercase;
+            margin-bottom: 0.8rem;
+        }
+
+        .movie-title-big {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 4rem;
+            letter-spacing: 2px;
+            line-height: 1;
+            margin-bottom: 1rem;
+        }
+
+        .meta-row {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .meta-pill {
+            display: flex; align-items: center; gap: 0.4rem;
+            background: var(--card); border: 1px solid var(--border);
+            border-radius: 20px; padding: 0.3rem 0.8rem;
+            font-size: 0.8rem; color: var(--muted);
+        }
+
+        .rating-pill {
+            background: rgba(245,197,24,0.1);
+            border-color: rgba(245,197,24,0.3);
+            color: #f5c518;
+        }
+
+        .movie-description {
+            color: var(--muted);
+            font-size: 1rem;
+            line-height: 1.7;
+            max-width: 600px;
+            margin-bottom: 2rem;
+        }
+
+        .director-row {
+            display: flex; align-items: center; gap: 0.8rem;
+        }
+
+        .director-avatar {
+            width: 36px; height: 36px; border-radius: 50%;
+            background: var(--card); border: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.85rem; font-weight: 500; color: var(--accent);
+        }
+
+        .director-info { display: flex; flex-direction: column; gap: 2px; }
+        .director-label { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+        .director-name { font-size: 0.9rem; font-weight: 500; }
+
+        /* STATS SECTION */
+        .stats-section {
+            padding: 2.5rem 4rem;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .stat-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.2rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .stat-card-label { font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+        .stat-card-value { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; letter-spacing: 1px; }
+
+        /* BACK SECTION */
+        .back-section {
+            padding: 2.5rem 4rem;
+        }
+
+        .btn-back {
+            display: inline-flex; align-items: center; gap: 0.5rem;
+            background: var(--card); border: 1px solid var(--border);
+            color: var(--text); text-decoration: none;
+            padding: 0.7rem 1.4rem; border-radius: 6px;
+            font-size: 0.9rem; font-weight: 500;
+            transition: border-color 0.2s, background 0.2s;
+        }
+        .btn-back:hover { border-color: rgba(255,255,255,0.2); background: #22223a; }
+
+        footer {
+            padding: 2rem 4rem; border-top: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .footer-logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.3rem; letter-spacing: 3px; color: var(--accent); opacity: 0.6; }
+        .footer-text { font-size: 0.8rem; color: var(--muted); }
+    </style>
+</head>
+<body>
+
+<nav>
+    <a href="/" class="logo">CineVault</a>
+    <div class="nav-right">
+        <a href="/">Films</a>
+        <% if (locals.user) { %>
+            <a href="/admin">Admin</a>
+            <a href="/logout" class="btn-login">Uitloggen</a>
+        <% } else { %>
+            <a href="/login" class="btn-login">Inloggen</a>
+        <% } %>
+    </div>
+</nav>
+
+<section class="movie-hero">
+    <div class="hero-backdrop"></div>
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+        <div class="movie-poster-wrap">
+            <img src="<%= movie.poster %>" alt="<%= movie.title %>">
+        </div>
+        <div class="movie-details">
+            <a href="/" class="back-link">← Terug naar films</a>
+            <% if (movie.genre) { %>
+                <div>
+                    <span class="genre-badge" style="background:<%= movie.genre.color %>22; color:<%= movie.genre.color %>; border:1px solid <%= movie.genre.color %>44;">
+                        <%= movie.genre.name %>
+                    </span>
+                </div>
+            <% } %>
+            <h1 class="movie-title-big"><%= movie.title %></h1>
+            <div class="meta-row">
+                <span class="meta-pill rating-pill">★ <%= movie.rating %></span>
+                <span class="meta-pill"><%= movie.year %></span>
+                <span class="meta-pill"><%= movie.duration %> min</span>
+            </div>
+            <p class="movie-description"><%= movie.description %></p>
+            <div class="director-row">
+                <div class="director-avatar"><%= movie.director.charAt(0) %></div>
+                <div class="director-info">
+                    <span class="director-label">Regisseur</span>
+                    <span class="director-name"><%= movie.director %></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="stats-section">
+    <div class="stat-card">
+        <span class="stat-card-label">Beoordeling</span>
+        <span class="stat-card-value" style="color:#f5c518;">★ <%= movie.rating %></span>
+    </div>
+    <div class="stat-card">
+        <span class="stat-card-label">Jaar</span>
+        <span class="stat-card-value"><%= movie.year %></span>
+    </div>
+    <div class="stat-card">
+        <span class="stat-card-label">Duur</span>
+        <span class="stat-card-value"><%= movie.duration %> <span style="font-size:1rem;font-family:'DM Sans',sans-serif;color:var(--muted)">min</span></span>
+    </div>
+    <div class="stat-card">
+        <span class="stat-card-label">Genre</span>
+        <span class="stat-card-value" style="font-size:1.4rem; font-family:'DM Sans',sans-serif; font-weight:500;">
+            <% if (movie.genre) { %><%= movie.genre.name %><% } else { %>—<% } %>
+        </span>
+    </div>
+</div>
+
+<div class="back-section">
+    <a href="/" class="btn-back">← Alle films bekijken</a>
+</div>
+
+<footer>
+    <div class="footer-logo">CineVault</div>
+    <p class="footer-text">© 2024 CineVault. Alle rechten voorbehouden.</p>
+</footer>
+
+</body>
+</html>
