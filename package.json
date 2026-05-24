@@ -6,7 +6,6 @@
   "scripts": {
     "test": "jest",
     "build": "tsc",
-    "dev": "nodemon src/index.ts",
     "start": "nodemon index.ts",
     "createAdmin": "ts-node scripts/createAdmin.ts",
     "seed": "ts-node scripts/seedMovies.ts"

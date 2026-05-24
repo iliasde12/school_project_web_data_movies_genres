@@ -1,13 +1,20 @@
 {
   "compilerOptions": {
     "outDir": "./dist",
-    "rootDir": "./src",
+    "rootDir": "./",
     "module": "commonjs",
     "target": "es2020",
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "strict": false
   },
-  "include": ["src/**/*"],
+  "include": [
+    "index.ts",
+    "routes/**/*",
+    "models/**/*",
+    "middleware/**/*",
+    "config/**/*",
+    "interfaces/**/*"
+  ],
   "exclude": ["node_modules", "dist"]
 }
