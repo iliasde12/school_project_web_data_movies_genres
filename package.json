@@ -5,7 +5,7 @@
   "main": "index.ts",
   "scripts": {
     "test": "jest",
-    "build": "tsc",
+    "build": "tsc && cp -r views dist/views && cp -r public dist/public",
     "start": "nodemon index.ts",
     "createAdmin": "ts-node scripts/createAdmin.ts",
     "seed": "ts-node scripts/seedMovies.ts"
