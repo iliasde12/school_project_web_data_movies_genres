@@ -19,7 +19,7 @@ app.set("views", path.join(__dirname, "views"));
 app.set("port", process.env.PORT || 3000);
 //cors zodat er geen onbekende op mijn routes kan iets kan doen
 app.use(cors({
-    origin: "http://localhost:3000", // 👈 alleen jouw domein
+    origin: process.env.CORS_ORIGIN || "http://localhost:3000",
     methods: ["GET"]
 }));
 //sessions
